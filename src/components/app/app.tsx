@@ -17,7 +17,7 @@ import styles from './app.module.css';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { AppDispatch, useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/ingredientsSlice';
-import { getUser } from '../../services/userSlice';
+import { getUser, userSliceActions } from '../../services/userSlice';
 import { ProtectedRoute } from '../protected-route/protected-route';
 
 const App = () => {
@@ -27,7 +27,14 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(getUser()).unwrap();
+    dispatch(getUser())
+      .unwrap()
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(userSliceActions.authCheck());
+      });
   }, []);
 
   const closeModal = () => {
