@@ -7,28 +7,18 @@ import { useParams } from 'react-router-dom';
 import { ingredientsSelectors } from '../../services/ingredientsSlice';
 import {
   getOrderByNumber,
-  orderSliceSelectors
+  ordersInfoDataSelector
 } from '../../services/orderSlice';
 
 export const OrderInfo: FC = () => {
   const dispatch = useDispatch();
-  const number = useParams().number;
-  const orderData = useSelector(orderSliceSelectors.selectOrder);
+  const number = useParams().number!;
+  const orderData = useSelector(ordersInfoDataSelector(number));
   /** TODO: взять переменные orderData и ingredients из стора */
 
-  // const orderData = {
-  //   createdAt: '',
-  //   ingredients: [],
-  //   _id: '',
-  //   status: '',
-  //   name: '',
-  //   updatedAt: 'string',
-  //   number: 0
-  // };
-
   useEffect(() => {
-    dispatch(getOrderByNumber(Number(number)));
-  }, []);
+    if (!orderData) dispatch(getOrderByNumber(Number(number)));
+  }, [dispatch, orderData, number]);
 
   const ingredients: TIngredient[] = useSelector(
     ingredientsSelectors.selectIngredients

@@ -42,25 +42,26 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     resetOrder: (state) => {
-      state.order = null;
+      state.neworder = null;
     }
   },
   selectors: {
     selectNewOrder: (state) => state.neworder,
+    selectNewOrderIsLoading: (state) => state.newOrderIsLoading,
     selectOrder: (state) => state.order,
     selectIsLoading: (state) => state.isLoading
   },
   extraReducers: (builder) => {
     builder
       .addCase(orderBurger.pending, (state) => {
-        state.isLoading = true;
+        state.newOrderIsLoading = true;
       })
       .addCase(orderBurger.rejected, (state, action) => {
-        state.isLoading = false;
+        state.newOrderIsLoading = false;
       })
       .addCase(orderBurger.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.order = action.payload.order;
+        state.newOrderIsLoading = false;
+        state.neworder = action.payload.order;
       })
       .addCase(getOrderByNumber.pending, (state) => {
         state.isLoading = true;
@@ -74,6 +75,25 @@ const orderSlice = createSlice({
       });
   }
 });
+
+export const ordersInfoDataSelector =
+  (number: string) => (state: RootState) => {
+    if (state.orders.orders.length) {
+      const orders = state.feeds.orders.find((item) => item.number === +number);
+      if (orders) return orders;
+    }
+    if (state.feeds.orders.length) {
+      const orders = state.orders.orders.find(
+        (item) => item.number === +number
+      );
+      if (orders) return orders;
+    }
+    if (state.order.order?.number === +number) {
+      return state.order.order;
+    }
+
+    return null;
+  };
 
 export const orderSliceReducer = orderSlice.reducer;
 export const orderSliceSelectors = orderSlice.selectors;

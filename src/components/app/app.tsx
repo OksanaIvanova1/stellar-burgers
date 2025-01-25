@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  useMatch
+} from 'react-router-dom';
 import {
   ConstructorPage,
   Feed,
@@ -25,6 +31,9 @@ const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const profileNumber = useMatch('/profile/orders/:number')?.params.number;
+  const feedNumber = useMatch('/feed/:number')?.params.number;
+
   useEffect(() => {
     dispatch(getIngredients());
     dispatch(getUser())
@@ -49,7 +58,15 @@ const App = () => {
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        <Route path='/feed:number' element={<OrderInfo />} />
+        <Route
+          path='/feed/:number'
+          element={
+            <div className={styles.detailPageWrap}>
+              #{feedNumber && feedNumber.padStart(6, '0')}
+              <OrderInfo />
+            </div>
+          }
+        />
         <Route
           path='/login'
           element={
@@ -98,8 +115,26 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path='/profile/orders:number' element={<OrderInfo />} />
-        <Route path='/ingredients/:id' element={<IngredientDetails />} />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <div className={styles.detailPageWrap}>
+              #{profileNumber && profileNumber.padStart(6, '0')}
+              <OrderInfo />
+            </div>
+          }
+        />
+        <Route
+          path='/ingredients/:id'
+          element={
+            <div className={styles.detailPageWrap}>
+              <p className={`text text_type_main-large ${styles.detailHeader}`}>
+                Детали ингредиента
+              </p>
+              <IngredientDetails />
+            </div>
+          }
+        />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
@@ -116,7 +151,10 @@ const App = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal title={'Детали заказа'} onClose={closeModal}>
+              <Modal
+                title={`#${profileNumber && profileNumber.padStart(6, '0')}`}
+                onClose={closeModal}
+              >
                 <OrderInfo />
               </Modal>
             }
@@ -124,7 +162,10 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal title={'Детали заказа'} onClose={closeModal}>
+              <Modal
+                title={`#${feedNumber && feedNumber.padStart(6, '0')}`}
+                onClose={closeModal}
+              >
                 <OrderInfo />
               </Modal>
             }

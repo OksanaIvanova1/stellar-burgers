@@ -47,7 +47,8 @@ const burgerConstructorSlice = createSlice({
         state.ingredients[index] = state.ingredients[index + 1];
         state.ingredients[index + 1] = currentIngredient;
       }
-    }
+    },
+    resetConstructor: (state) => (state = initialState)
   },
   selectors: {
     selectBurgerConstructorState: (state: TBurgerConstructorState) => state

@@ -2,8 +2,10 @@ import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useDispatch, useSelector } from '../../services/store';
-import { burgerConstructorSliceSelectors } from '../../services/burgerConstructorSlice';
-import { ordersSliceSelectors } from '../../services/ordersSlice';
+import {
+  burgerConstructorSliceActions,
+  burgerConstructorSliceSelectors
+} from '../../services/burgerConstructorSlice';
 import { userSliceSelectors } from '../../services/userSlice';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,9 +24,9 @@ export const BurgerConstructor: FC = () => {
     burgerConstructorSliceSelectors.selectBurgerConstructorState
   );
 
-  const orderRequest = useSelector(ordersSliceSelectors.selectIsLoading);
+  const orderRequest = useSelector(orderSliceSelectors.selectNewOrderIsLoading);
 
-  const orderModalData = useSelector(orderSliceSelectors.selectOrder);
+  const orderModalData = useSelector(orderSliceSelectors.selectNewOrder);
   const user = useSelector(userSliceSelectors.selectUser);
 
   const onOrderClick = () => {
@@ -43,7 +45,10 @@ export const BurgerConstructor: FC = () => {
 
     dispatch(orderBurger(burgerIngredients));
   };
-  const closeOrderModal = () => dispatch(orderSliceActions.resetOrder());
+  const closeOrderModal = () => {
+    dispatch(orderSliceActions.resetOrder());
+    dispatch(burgerConstructorSliceActions.resetConstructor());
+  };
 
   const price = useMemo(
     () =>
