@@ -1,14 +1,13 @@
 import { getOrdersApi } from '@api';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TIngredient, TOrder } from '@utils-types';
-import { RootState } from './store';
+import { TOrder } from '@utils-types';
 
 export const getOrders = createAsyncThunk('orders/getAll', async () => {
   const data = getOrdersApi();
   return data;
 });
 
-type TOrdersState = {
+export type TOrdersState = {
   orders: TOrder[];
   isLoading: boolean;
   error: string | null;

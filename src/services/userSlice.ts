@@ -47,7 +47,7 @@ export const updateUser = createAsyncThunk(
     await updateUserApi({ email, name, password })
 );
 
-type TUserState = {
+export type TUserState = {
   isAuthChecked: boolean;
   user: TUser | null;
   error: string | null;
