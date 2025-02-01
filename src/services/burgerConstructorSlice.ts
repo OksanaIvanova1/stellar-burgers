@@ -42,7 +42,7 @@ const burgerConstructorSlice = createSlice({
     },
     moveIngredientDown: (state, action) => {
       const index = action.payload;
-      if (index > 0) {
+      if (index >= 0) {
         const currentIngredient = state.ingredients[index];
         state.ingredients[index] = state.ingredients[index + 1];
         state.ingredients[index + 1] = currentIngredient;
